@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic AI Business Models - Interactive Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --secondary: #7c3aed;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        /* Navigation */
+        .nav {
+            background: var(--dark);
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 0;
+        }
+
+        .nav-item {
+            padding: 15px 30px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            font-weight: 500;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .nav-item.active {
+            background: rgba(255,255,255,0.1);
+            border-bottom-color: var(--primary);
+        }
+
+        /* Content */
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Dashboard Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 2.5em;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        /* Filters */
+        .filters {
+            background: var(--light);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .filters h2 {
+            margin-bottom: 20px;
+            color: var(--dark);
+            font-size: 1.3em;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+        }
+
+        button.secondary {
+            background: var(--gray);
+        }
+
+        button.secondary:hover {
+            background: #475569;
+        }
+
+        /* Results Info */
+        .results-info {
+            padding: 15px;
+            background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--dark);
+            border-left: 4px solid var(--primary);
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        thead {
+            background: var(--dark);
+            color: white;
+        }
+
+        th {
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        th:hover {
+            background: #334155;
+        }
+
+        th.sortable::after {
+            content: ' ⇅';
+            opacity: 0.5;
+            font-size: 0.8em;
+        }
+
+        th.sorted-asc::after {
+            content: ' ↑';
+            opacity: 1;
+        }
+
+        th.sorted-desc::after {
+            content: ' ↓';
+            opacity: 1;
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #e2e8f0;
+            line-height: 1.6;
+        }
+
+        tbody tr {
+            transition: all 0.2s;
+        }
+
+        tbody tr:hover {
+            background: var(--light);
+            transform: scale(1.01);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .badge-mature {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-emerging {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-experimental {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Category Tags */
+        .category-tag {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: white;
+            white-space: nowrap;
+        }
+
+        .Infrastructure { background: #1d4ed8; }
+        .Intelligence { background: #7e22ce; }
+        .Execution { background: #059669; }
+        .Coordination { background: #9333ea; }
+        .Application { background: #dc2626; }
+        .Trust { background: #2563eb; }
+
+        /* Pattern Cards View */
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 25px;
+        }
+
+        .pattern-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border-left: 5px solid var(--primary);
+        }
+
+        .pattern-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .pattern-card h3 {
+            color: var(--dark);
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .pattern-card .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .pattern-card .description {
+            color: var(--gray);
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+
+        .pattern-card .value {
+            background: var(--light);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-style: italic;
+            color: var(--dark);
+        }
+
+        .pattern-card .examples {
+            font-size: 0.9em;
+            color: var(--gray);
+            padding-top: 12px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .pattern-card .examples strong {
+            color: var(--dark);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pattern-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-item {
+                padding: 12px 20px;
+                font-size: 0.9em;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Model Name Styling */
+        .model-name {
+            font-weight: 700;
+            color: var(--dark);
+            font-size: 1.05em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🤖 Agentic AI Business Models</h1>
+            <p>Next-Generation Business Models for 2025 and Beyond - Interactive Analysis Platform</p>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav">
+            <div class="nav-item active" onclick="showSection('dashboard')">📊 Dashboard</div>
+            <div class="nav-item" onclick="showSection('table')">📋 Table View</div>
+            <div class="nav-item" onclick="showSection('cards')">🗂️ Card View</div>
+            <div class="nav-item" onclick="showSection('insights')">💡 Insights</div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="section active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3 id="totalModels">17</h3>
+                        <p>Total Business Models</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="matureModels">4</h3>
+                        <p>Mature Models</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="emergingModels">10</h3>
+                        <p>Emerging Models</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="experimentalModels">3</h3>
+                        <p>Experimental Models</p>
+                    </div>
+                </div>
+
+                <div class="filters">
+                    <h2>🔍 Filters and Search</h2>
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label>🔎 Search</label>
+                            <input type="text" id="searchInput" placeholder="Search business model, description or example..." oninput="filterData()">
+                        </div>
+                        <div class="filter-group">
+                            <label>🗂️ Main Category</label>
+                            <select id="categoryFilter" onchange="filterData()">
+                                <option value="">All</option>
+                                <option value="Infrastructure & Enablers">Infrastructure & Enablers</option>
+                                <option value="Intelligence Layer">Intelligence Layer</option>
+                                <option value="Execution & Service Models">Execution & Service Models</option>
+                                <option value="Coordination & Ecosystem">Coordination & Ecosystem</option>
+                                <option value="Application & Commercialization">Application & Commercialization</option>
+                                <option value="Trust & Governance">Trust & Governance</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>📈 Maturity Level</label>
+                            <select id="maturityFilter" onchange="filterData()">
+                                <option value="">All</option>
+                                <option value="Mature">Mature</option>
+                                <option value="Emerging">Emerging</option>
+                                <option value="Experimental">Experimental</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-actions">
+                        <button onclick="resetFilters()">🔄 Reset Filters</button>
+                    </div>
+                </div>
+
+                <div class="results-info" id="resultsInfo">
+                    Showing 17 business models
+                </div>
+            </div>
+
+            <!-- Table Section -->
+            <div id="table" class="section">
+                <div class="table-container">
+                    <table id="modelsTable">
+                        <thead>
+                            <tr>
+                                <th class="sortable" onclick="sortTable('name')">🏷️ Business Model</th>
+                                <th>🗂️ Main Category</th>
+                                <th class="sortable" onclick="sortTable('desc')">⚙️ Short Description</th>
+                                <th class="sortable" onclick="sortTable('value')">💡 Value Proposition</th>
+                                <th class="sortable" onclick="sortTable('revenue')">💰 Revenue Model</th>
+                                <th class="sortable" onclick="sortTable('maturity')">📈 Maturity</th>
+                                <th>🧩 Examples</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Cards Section -->
+            <div id="cards" class="section">
+                <div class="pattern-grid" id="cardsContainer"></div>
+            </div>
+
+            <!-- Insights Section -->
+            <div id="insights" class="section">
+                <h2 style="margin-bottom: 20px; color: var(--dark);">💡 Strategic Insights</h2>
+                
+                <div class="pattern-card">
+                    <h3>🎯 Market Maturity Analysis</h3>
+                    <div class="description">
+                        <strong>Mature Models (4):</strong> MaaS, DaaS, AIaaS, and HITL have reached dominant positions. 
+                        Leaders like OpenAI, Anthropic, Bloomberg, and Scale AI hold strong positions in these segments. 
+                        HITL services have been industry standard since 2016 with established RLHF pipelines.
+                    </div>
+                    <div class="description">
+                        <strong>Emerging Models (10):</strong> AaaS, RaaS, Agent Marketplaces, and Orchestration Platforms 
+                        are showing rapid growth in 2024-2025. Enterprise players like Salesforce and Zendesk are investing heavily in this space.
+                    </div>
+                    <div class="description">
+                        <strong>Experimental Models (3):</strong> A2A Economy, Tokenized Agents, and Micro-AI Businesses 
+                        are in proof-of-concept stage. They will play critical roles in the 2027-2030 vision.
+                    </div>
+                </div>
+
+                <div class="pattern-card">
+                    <h3>🔄 From SaaS to RaaS Transition</h3>
+                    <div class="value">
+                        Agentic AI is transforming the software industry from "selling tools" to "selling outcomes". 
+                        The RaaS model enables customers to pay only for measurable KPIs.
+                    </div>
+                    <div class="description">
+                        <strong>Example:</strong> Navimod's robo-advisor service charges not for portfolio management "software", 
+                        but directly based on investment returns. As AI reliability increases, this model will become widespread 
+                        across all B2B SaaS segments.
+                    </div>
+                </div>
+
+                <div class="pattern-card">
+                    <h3>🤝 The Future of A2A Economy</h3>
+                    <div class="description">
+                        Agent-to-Agent Economy forms the foundation of autonomous machine-to-machine commerce. 
+                        Blockchain-based smart contracts and token economics enable agents to transact with each other 
+                        without human intervention.
+                    </div>
+                    <div class="value">
+                        <strong>Potential Applications:</strong>
+                        <br>• Financial agents conducting automatic arbitrage transactions
+                        <br>• Supply chain agents autonomously negotiating contracts
+                        <br>• AI research agents sharing data and compute resources
+                    </div>
+                </div>
+
+                <div class="pattern-card">
+                    <h3>📊 Category-Based Distribution</h3>
+                    <div class="description">
+                        <strong>Infrastructure & Enablers (3):</strong> Infrastructure and developer tools
+                        <br><strong>Intelligence Layer (3):</strong> Model, data, and evaluation services
+                        <br><strong>Execution & Service Models (3):</strong> Task and outcome-oriented services
+                        <br><strong>Coordination & Ecosystem (3):</strong> Agent coordination and marketplaces
+                        <br><strong>Application & Commercialization (3):</strong> Commercial applications and micro-businesses
+                        <br><strong>Trust & Governance (2):</strong> Security, privacy, and auditing
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data
+        const models = [
+            {
+                name: "AaaS – Agent-as-a-Service",
+                category: "Execution & Service Models",
+                desc: "Autonomous AI agents performing business tasks as a service.",
+                value: "Companies purchase completed outcomes instead of tools; operational burden is reduced.",
+                revenue: "Subscription or per-task pricing",
+                maturity: "Emerging",
+                examples: "Salesforce Einstein Copilot, Zendesk AI Agents, Sierra AI"
+            },
+            {
+                name: "RaaS – Results-as-a-Service",
+                category: "Execution & Service Models",
+                desc: "Payment is made only for measurable results.",
+                value: "Performance-based contract; selling outcomes, not outputs.",
+                revenue: "Performance-based contract or success fee",
+                maturity: "Emerging",
+                examples: "Navimod Robo-Advisor, autonomous accounting services"
+            },
+            {
+                name: "MaaS – Model-as-a-Service",
+                category: "Intelligence Layer",
+                desc: "Pre-trained models rented via APIs.",
+                value: "Companies access ready-to-use intelligence capacity without developing models from scratch.",
+                revenue: "Usage-based (token/hour) pricing",
+                maturity: "Mature",
+                examples: "OpenAI API, Anthropic Claude, AWS SageMaker JumpStart"
+            },
+            {
+                name: "DaaS – Data-as-a-Service",
+                category: "Intelligence Layer",
+                desc: "High-quality, licensed datasets or financial content sold via APIs.",
+                value: "Improves model accuracy with verified and reliable data, reduces data collection costs.",
+                revenue: "Data subscription or enterprise license",
+                maturity: "Mature",
+                examples: "Bloomberg Terminal API, FactSet, Moody's Analytics API, Refinitiv Data Platform"
+            },
+            {
+                name: "Agent Marketplaces",
+                category: "Coordination & Ecosystem",
+                desc: "Digital stores where AI agents are listed and traded.",
+                value: "Revenue channel for developers, ready-made solution pool for businesses.",
+                revenue: "Commission or subscription",
+                maturity: "Emerging",
+                examples: "Hugging Face Hub, GPT Store, LangChain Hub"
+            },
+            {
+                name: "A2A – Agent-to-Agent Economy",
+                category: "Coordination & Ecosystem",
+                desc: "Network economy where agents autonomously transact with each other.",
+                value: "Creates machine-to-machine economy without human intervention.",
+                revenue: "Token, smart contract, or transaction fees",
+                maturity: "Experimental",
+                examples: "Autonolas (OLAS), Fetch.ai, SingularityNET"
+            },
+            {
+                name: "Orchestration Platforms",
+                category: "Coordination & Ecosystem",
+                desc: "Framework and hosting platforms where multiple AI agents work in coordination.",
+                value: "Provides collective intelligence and scalability in complex processes.",
+                revenue: "Platform membership, enterprise hosting, or API fees",
+                maturity: "Emerging",
+                examples: "LangSmith, CrewAI Cloud, Fixie AI, AutoGen Studio"
+            },
+            {
+                name: "Tokenized Agents",
+                category: "Application & Commercialization",
+                desc: "Agents owned via tokens or NFTs that generate income.",
+                value: "Provides digital ownership and profit sharing; transforms users into investors.",
+                revenue: "Token sales, profit sharing, DAO-based models",
+                maturity: "Experimental",
+                examples: "Virtuals.ai, Alethea AI, MyShell, Bittensor TAO, Altered State Machine"
+            },
+            {
+                name: "Micro-AI Businesses",
+                category: "Application & Commercialization",
+                desc: "Autonomous micro-businesses operating with minimal human involvement.",
+                value: "Creates 24/7 revenue-generating digital assets; provides scalable micro-economy.",
+                revenue: "Commission, outcome-based, or automatic revenue",
+                maturity: "Experimental",
+                examples: "AI-generated content shops, autonomous trading bots, AI affiliate marketing stores"
+            },
+            {
+                name: "Vertical AI Agents",
+                category: "Application & Commercialization",
+                desc: "Expert agents specialized in specific industries.",
+                value: "Provides high accuracy and deep expertise in vertical markets.",
+                revenue: "Vertical service subscription or transaction-based model",
+                maturity: "Emerging",
+                examples: "Harvey AI (legal), Cresta AI (customer service), Navimod Financial Agents"
+            },
+            {
+                name: "AIaaS – AI Infrastructure",
+                category: "Infrastructure & Enablers",
+                desc: "Services offering GPU, compute, and model training infrastructure.",
+                value: "Provides scalable AI infrastructure for developers, ensures high efficiency.",
+                revenue: "Hour/token-based usage fees",
+                maturity: "Mature",
+                examples: "AWS SageMaker, Lambda Labs, RunPod, Google Vertex AI"
+            },
+            {
+                name: "Agent Development Platforms",
+                category: "Infrastructure & Enablers",
+                desc: "Tools for developing, testing, and deploying agents.",
+                value: "Provides developers with speed, error reduction, and traceability.",
+                revenue: "License, API, or project-based pricing",
+                maturity: "Emerging",
+                examples: "LangGraph, LangSmith, OpenDevin, Fixie AI"
+            },
+            {
+                name: "Memory-as-a-Service",
+                category: "Infrastructure & Enablers",
+                desc: "Vector or memory database services for AI agents.",
+                value: "Provides agents with persistent memory for long-term reasoning.",
+                revenue: "Usage-based or storage-based pricing",
+                maturity: "Emerging",
+                examples: "Pinecone, Weaviate, Milvus, Chroma"
+            },
+            {
+                name: "EaaS – Evaluation-as-a-Service",
+                category: "Intelligence Layer",
+                desc: "Platforms testing AI reliability, bias, and hallucination risk.",
+                value: "Ensures trustworthy and measurable AI performance.",
+                revenue: "Model-based or enterprise subscription",
+                maturity: "Emerging",
+                examples: "Arize AI, Weights & Biases, Galileo, TruLens"
+            },
+            {
+                name: "HITL – Human-in-the-Loop Services",
+                category: "Execution & Service Models",
+                desc: "Combines human oversight with AI for reliability.",
+                value: "Ensures ethical and accurate AI decisions.",
+                revenue: "Task or hourly-based pricing",
+                maturity: "Mature",
+                examples: "Scale AI, Invisible Technologies, Labelbox, Surge AI"
+            },
+            {
+                name: "PPaaS – Privacy-Preserving AI / On-Prem Agents",
+                category: "Trust & Governance",
+                desc: "On-premise AI systems for sensitive data environments.",
+                value: "Guarantees data privacy and compliance in regulated industries.",
+                revenue: "Enterprise license or private deployment fee",
+                maturity: "Emerging",
+                examples: "PrivateGPT, Azure OpenAI On-Prem, Glean AI"
+            },
+            {
+                name: "Audit-as-a-Service",
+                category: "Trust & Governance",
+                desc: "Auditing and monitoring of AI decisions and behaviors.",
+                value: "Ensures accountability and transparency in AI actions.",
+                revenue: "Compliance-based subscription",
+                maturity: "Emerging",
+                examples: "Truera, Arthur AI, Fiddler AI, Robust Intelligence"
+            }
+        ];
+
+        let filteredModels = [...models];
+        let sortDirection = {};
+
+        // Initialize
+        function init() {
+            updateStats();
+            renderTable(filteredModels);
+            renderCards(filteredModels);
+        }
+
+        // Show Section
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+
+            if (sectionId === 'table') {
+                renderTable(filteredModels);
+            } else if (sectionId === 'cards') {
+                renderCards(filteredModels);
+            }
+        }
+
+        // Update Stats
+        function updateStats() {
+            const mature = models.filter(m => m.maturity === 'Mature').length;
+            const emerging = models.filter(m => m.maturity === 'Emerging').length;
+            const experimental = models.filter(m => m.maturity === 'Experimental').length;
+
+            document.getElementById('totalModels').textContent = models.length;
+            document.getElementById('matureModels').textContent = mature;
+            document.getElementById('emergingModels').textContent = emerging;
+            document.getElementById('experimentalModels').textContent = experimental;
+        }
+
+        // Get Category Class
+        function getCategoryClass(category) {
+            if (category.includes('Infrastructure')) return 'Infrastructure';
+            if (category.includes('Intelligence')) return 'Intelligence';
+            if (category.includes('Execution')) return 'Execution';
+            if (category.includes('Coordination')) return 'Coordination';
+            if (category.includes('Application')) return 'Application';
+            return 'Trust';
+        }
+
+        // Render Table
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            data.forEach(model => {
+                const catClass = getCategoryClass(model.category);
+                const row = `
+                    <tr>
+                        <td><span class="model-name">${model.name}</span></td>
+                        <td><span class="category-tag ${catClass}">${model.category}</span></td>
+                        <td>${model.desc}</td>
+                        <td>${model.value}</td>
+                        <td>${model.revenue}</td>
+                        <td><span class="badge badge-${model.maturity.toLowerCase()}">${model.maturity}</span></td>
+                        <td>${model.examples}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // Render Cards
+        function renderCards(data) {
+            const container = document.getElementById('cardsContainer');
+            container.innerHTML = '';
+
+            data.forEach(model => {
+                const catClass = getCategoryClass(model.category);
+                const card = document.createElement('div');
+                card.className = 'pattern-card';
+                card.innerHTML = `
+                    <h3>${model.name}</h3>
+                    <div class="meta">
+                        <span class="category-tag ${catClass}">${model.category}</span>
+                        <span class="badge badge-${model.maturity.toLowerCase()}">${model.maturity}</span>
+                    </div>
+                    <div class="description">${model.desc}</div>
+                    <div class="value"><strong>Value:</strong> ${model.value}</div>
+                    <div class="description"><strong>Revenue Model:</strong> ${model.revenue}</div>
+                    <div class="examples"><strong>Examples:</strong> ${model.examples}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Filter Data
+        function filterData() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+            const maturity = document.getElementById('maturityFilter').value;
+
+            filteredModels = models.filter(model => {
+                const matchSearch = !search || 
+                    model.name.toLowerCase().includes(search) ||
+                    model.desc.toLowerCase().includes(search) ||
+                    model.examples.toLowerCase().includes(search) ||
+                    model.value.toLowerCase().includes(search);
+                
+                const matchCategory = !category || model.category === category;
+                const matchMaturity = !maturity || model.maturity === maturity;
+
+                return matchSearch && matchCategory && matchMaturity;
+            });
+
+            document.getElementById('resultsInfo').textContent = 
+                `Showing ${filteredModels.length} business models`;
+
+            renderTable(filteredModels);
+            renderCards(filteredModels);
+        }
+
+        // Reset Filters
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('maturityFilter').value = '';
+            filteredModels = [...models];
+            
+            document.getElementById('resultsInfo').textContent = 
+                `Showing ${models.length} business models`;
+
+            renderTable(filteredModels);
+            renderCards(filteredModels);
+        }
+
+        // Sort Table
+        function sortTable(field) {
+            const direction = sortDirection[field] === 'asc' ? 'desc' : 'asc';
+            sortDirection[field] = direction;
+
+            filteredModels.sort((a, b) => {
+                const aVal = a[field].toLowerCase();
+                const bVal = b[field].toLowerCase();
+                
+                if (direction === 'asc') {
+                    return aVal > bVal ? 1 : -1;
+                } else {
+                    return aVal < bVal ? 1 : -1;
+                }
+            });
+
+            // Update header indicators
+            document.querySelectorAll('th').forEach(th => {
+                th.classList.remove('sorted-asc', 'sorted-desc');
+            });
+
+            const clickedHeader = event.target;
+            clickedHeader.classList.add(`sorted-${direction}`);
+
+            renderTable(filteredModels);
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
