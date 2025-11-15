@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XRV0JVTY6Q"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XRV0JVTY6Q"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -36,6 +35,55 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
+            position: relative; /* For home button positioning context */
+        }
+
+        /* Home Button Styles - Added */
+        .home-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .home-btn:hover {
+            background: white;
+            color: #764ba2; /* Matches the gradient end color */
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .home-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        @media (max-width: 768px) {
+            .home-btn {
+                top: 10px;
+                left: 10px;
+                width: 40px;
+                height: 40px;
+            }
+            .home-btn svg {
+                width: 20px;
+                height: 20px;
+            }
         }
 
         .container {
@@ -449,14 +497,18 @@
     </style>
 </head>
 <body>
+    <a href="https://alpustundag.github.io/" class="home-btn" aria-label="Home">
+        <svg viewBox="0 0 24 24">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+    </a>
+
     <div class="container">
-        <!-- Header -->
         <div class="header">
             <h1>🤖 Agentic AI Business Models</h1>
             <p>Next-Generation Business Models for 2025 and Beyond - Interactive Analysis Platform</p>
         </div>
 
-        <!-- Navigation -->
         <div class="nav">
             <div class="nav-item active" onclick="showSection('dashboard')">📊 Dashboard</div>
             <div class="nav-item" onclick="showSection('table')">📋 Table View</div>
@@ -464,9 +516,7 @@
             <div class="nav-item" onclick="showSection('insights')">💡 Insights</div>
         </div>
 
-        <!-- Content -->
         <div class="content">
-            <!-- Dashboard Section -->
             <div id="dashboard" class="section active">
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -526,7 +576,6 @@
                 </div>
             </div>
 
-            <!-- Table Section -->
             <div id="table" class="section">
                 <div class="table-container">
                     <table id="modelsTable">
@@ -546,12 +595,10 @@
                 </div>
             </div>
 
-            <!-- Cards Section -->
             <div id="cards" class="section">
                 <div class="pattern-grid" id="cardsContainer"></div>
             </div>
 
-            <!-- Insights Section -->
             <div id="insights" class="section">
                 <h2 style="margin-bottom: 20px; color: var(--dark);">💡 Strategic Insights</h2>
                 
